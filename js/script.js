@@ -44,7 +44,7 @@ function renderPosts(data) {
     postContainer.innerHTML = "";
     const posts = data.data;
 
-    posts.forEach(async (post) => {
+    posts.forEach((post) => {
         const rawImageUrl =
             post.medium_image?.[0]?.url_full ||
             post.medium_image?.[0]?.url ||
@@ -57,13 +57,8 @@ function renderPosts(data) {
             const fullImageUrl = rawImageUrl.startsWith("http")
                 ? rawImageUrl
                 : `https://suitmedia-backend.suitdev.com${rawImageUrl}`;
-            try {
-                const response = await fetch(fullImageUrl);
-                const blob = await response.blob();
-                imageUrl = URL.createObjectURL(blob);
-            } catch (err) {
-                console.error("Gagal load gambar", err);
-            }
+
+            imageUrl = `/api/image?url=${encodeURIComponent(fullImageUrl)}`;
         }
 
         postContainer.innerHTML += `
@@ -85,6 +80,7 @@ function renderPosts(data) {
     const end = Math.min(state.page * state.size, data.meta.total);
     showingText.textContent = `Showing ${start} - ${end} of ${data.meta.total}`;
 }
+
 
 // ============ RENDER PAGINATION ============
 function renderPagination(data) {
