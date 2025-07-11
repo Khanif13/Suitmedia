@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Suitmedia Ideas</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles/style.css">
+</head>
+
+<body>
+  <!-- TODO: NAVBAR -->
+  <nav id="mainNav" class="navbar navbar-expand-lg fixed-top shadow-sm bg-white">
+    <div class="container">
+      <a class="navbar-brand" href="#">Suitmedia</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="#">Work</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">About</a></li>
+          <li class="nav-item"><a class="nav-link active" href="#">Ideas</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Careers</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- TODO: BANNER -->
+  <section class="position-relative overflow-hidden">
+    <div class="parallax-bg d-flex justify-content-center align-items-center text-white text-center flex-column">
+      <h1 class="display-4 fw-bold">Ideas</h1>
+      <p>Where all our great things begin</p>
+    </div>
+    <div class="banner-clip-path"></div>
+  </section>
+
+  <!-- TODO: FILTER & GRID -->
+  <section class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+      <div><span id="showingText">Showing 1 - 10</span></div>
+      <div class="d-flex gap-3">
+        <select class="form-select" id="itemPerPage" style="width: 120px;">
+          <option value="10">Show: 10</option>
+          <option value="20">Show: 20</option>
+          <option value="50">Show: 50</option>
+        </select>
+        <select class="form-select" id="sortBy" style="width: 150px;">
+          <option value="-published_at">Sort: Newest</option>
+          <option value="published_at">Sort: Oldest</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row" id="postContainer"></div>
+
+    <nav class="d-flex justify-content-center mt-4">
+      <ul class="pagination" id="pagination"></ul>
+    </nav>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/script.js"></script>
+</body>
+
+</html>
