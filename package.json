@@ -1,17 +1,12 @@
 {
   "name": "suitmedia",
   "version": "1.0.0",
-  "main": "index.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
   "dependencies": {
-    "vite": "^5.4.19"
+    "vite": "^5.1.4"
   }
 }
