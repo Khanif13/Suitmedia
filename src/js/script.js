@@ -27,7 +27,12 @@ window.addEventListener("scroll", () => {
 // ============ FETCH DATA ============
 async function fetchPosts() {
     // const url = `https://suitmedia-backend.suitdev.com/api/ideas?page[number]=${state.page}&page[size]=${state.size}&append[]=small_image&append[]=medium_image&sort=${state.sort}`;
-    const url = `/api/ideas?page[number]=${state.page}&page[size]=${state.size}&append[]=small_image&append[]=medium_image&sort=${state.sort}`;
+    // const url = `/api/ideas?page[number]=${state.page}&page[size]=${state.size}&append[]=small_image&append[]=medium_image&sort=${state.sort}`;
+    const API_BASE = import.meta.env.PROD
+        ? 'https://suitmedia-backend.suitdev.com/api'
+        : '/api';
+
+    const url = `${API_BASE}/ideas?page[number]=${state.page}&page[size]=${state.size}&append[]=small_image&append[]=medium_image&sort=${state.sort}`;
 
     const res = await fetch(url, {
         headers: {
