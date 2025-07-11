@@ -1,24 +1,35 @@
+import https from 'https';
+
 export default async function handler(req, res) {
     const { url } = req.query;
 
     if (!url) return res.status(400).send('Image URL is required');
 
     try {
-        const response = await fetch(url, {
+        const options = new URL(url);
+
+        const request = https.get({
+            hostname: options.hostname,
+            path: options.pathname + options.search,
             headers: {
-                'User-Agent': req.headers['user-agent'] || 'Mozilla/5.0',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                'Referer': 'https://suitmedia.com',
                 'Accept': 'image/avif,image/webp,image/apng,image/*,*/*;q=0.8',
-                'Referer': 'https://suitmedia-backend.suitdev.com'
             }
+        }, (response) => {
+            if (response.statusCode !== 200) {
+                res.status(response.statusCode).send('Failed to fetch image');
+                return;
+            }
+
+            res.setHeader('Content-Type', response.headers['content-type']);
+            response.pipe(res);
         });
 
-        if (!response.ok) {
-            return res.status(response.status).send('Failed to fetch image');
-        }
-
-        res.setHeader('Content-Type', response.headers.get('content-type'));
-        const buffer = await response.arrayBuffer();
-        res.send(Buffer.from(buffer));
+        request.on('error', (err) => {
+            console.error(err);
+            res.status(500).send('Error fetching image');
+        });
     } catch (err) {
         res.status(500).send('Internal error');
     }
