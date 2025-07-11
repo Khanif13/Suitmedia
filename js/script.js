@@ -26,7 +26,9 @@ window.addEventListener("scroll", () => {
 
 // ============ FETCH DATA ============
 async function fetchPosts() {
-    const url = `https://suitmedia-backend.suitdev.com/api/ideas?page[number]=${state.page}&page[size]=${state.size}&append[]=small_image&append[]=medium_image&sort=${state.sort}`;
+    // const url = `https://suitmedia-backend.suitdev.com/api/ideas?page[number]=${state.page}&page[size]=${state.size}&append[]=small_image&append[]=medium_image&sort=${state.sort}`;
+    const url = `https://suitmedia-backend.suitdev.com/api/ideas?page[number]=${state.page}&page[size]=${state.size}&append[]=medium_image&append[]=small_image&sort=${state.sort}`;
+
     const res = await fetch(url, {
         headers: {
             "Accept": "application/json"
@@ -37,31 +39,34 @@ async function fetchPosts() {
     return json;
 }
 
-
 // ============ RENDER POSTS ============
 function renderPosts(data) {
+
     postContainer.innerHTML = "";
     const posts = data.data;
 
     posts.forEach(post => {
-        const imageUrl = post.medium_image?.[0]?.url || "https://via.placeholder.com/400x300?text=No+Image";
-        const title = post.title;
-        const date = new Date(post.published_at).toLocaleDateString("id-ID", {
-            day: 'numeric', month: 'long', year: 'numeric'
-        });
+        const imagePath = post.medium_image?.[0]?.url || post.small_image?.[0]?.url;
+        const imageUrl = imagePath || "https://via.placeholder.com/400x300?text=No+Image";
+
+        console.log("Gambar path:", imagePath);
+        console.log("Full URL:", imageUrl);
 
         postContainer.innerHTML += `
     <div class="col-md-4 mb-4">
-    <div class="card h-100 shadow-sm">
-        <img src="${imageUrl}" class="card-img-top" loading="lazy" alt="${title}" style="aspect-ratio: 4/3; object-fit: cover;">
-        <div class="card-body">
-        <small class="text-muted">${date}</small>
-        <h5 class="card-title post-title">${title}</h5>
+        <div class="card h-100 shadow-sm">
+            <img src="${imageUrl}" class="card-img-top" loading="lazy" alt="${post.title}" style="aspect-ratio: 4/3; object-fit: cover;">
+            <div class="card-body">
+                <small class="text-muted">${new Date(post.published_at).toLocaleDateString("id-ID", {
+            day: 'numeric', month: 'long', year: 'numeric'
+        })}</small>
+                <h5 class="card-title post-title">${post.title}</h5>
+            </div>
         </div>
-    </div>
     </div>
     `;
     });
+
 
     const start = (state.page - 1) * state.size + 1;
     const end = Math.min(state.page * state.size, data.meta.total);
