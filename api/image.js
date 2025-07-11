@@ -4,7 +4,13 @@ export default async function handler(req, res) {
     if (!url) return res.status(400).send('Image URL is required');
 
     try {
-        const response = await fetch(url);
+        const response = await fetch(url, {
+            headers: {
+                'User-Agent': req.headers['user-agent'] || 'Mozilla/5.0',
+                'Accept': 'image/avif,image/webp,image/apng,image/*,*/*;q=0.8',
+                'Referer': 'https://suitmedia-backend.suitdev.com'
+            }
+        });
 
         if (!response.ok) {
             return res.status(response.status).send('Failed to fetch image');
