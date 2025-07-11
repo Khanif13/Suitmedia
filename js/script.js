@@ -46,10 +46,20 @@ function renderPosts(data) {
     const posts = data.data;
 
     posts.forEach(post => {
-        const imagePath = post.medium_image?.[0]?.url || post.small_image?.[0]?.url;
-        const imageUrl = imagePath || "https://via.placeholder.com/400x300?text=No+Image";
+        const rawImageUrl =
+            post.medium_image?.[0]?.url_full ||
+            post.medium_image?.[0]?.url ||
+            post.small_image?.[0]?.url_full ||
+            post.small_image?.[0]?.url;
 
-        console.log("Gambar path:", imagePath);
+        // Cek apakah URL sudah absolute atau relative
+        const imageUrl = rawImageUrl?.startsWith("http")
+            ? rawImageUrl
+            : rawImageUrl
+                ? `https://suitmedia-backend.suitdev.com${rawImageUrl}`
+                : "https://via.placeholder.com/400x300?text=No+Image";
+
+        console.log("Gambar path:", rawImageUrl);
         console.log("Full URL:", imageUrl);
 
         postContainer.innerHTML += `
@@ -64,8 +74,9 @@ function renderPosts(data) {
             </div>
         </div>
     </div>
-    `;
+  `;
     });
+
 
 
     const start = (state.page - 1) * state.size + 1;
