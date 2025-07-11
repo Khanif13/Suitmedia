@@ -26,23 +26,30 @@ window.addEventListener("scroll", () => {
 
 // ============ FETCH DATA ============
 async function fetchPosts() {
-    // const url = `https://suitmedia-backend.suitdev.com/api/ideas?page[number]=${state.page}&page[size]=${state.size}&append[]=small_image&append[]=medium_image&sort=${state.sort}`;
-    const url = `/api/api/ideas?page[number]=${state.page}&page[size]=${state.size}&append[]=small_image&append[]=medium_image&sort=${state.sort}`;
+    const url = `https://suitmedia-backend.suitdev.com/api/ideas?page[number]=${state.page}&page[size]=${state.size}&append[]=small_image&append[]=medium_image&sort=${state.sort}`;
 
     const res = await fetch(url, {
         headers: {
             "Accept": "application/json"
         }
     });
+
+    if (!res.ok) {
+        console.error("API error:", res.status);
+        return { data: [], meta: { total: 0, last_page: 1 } }; // fallback kosong
+    }
+
     const json = await res.json();
-    console.log(json);
     return json;
 }
+
 
 // ============ RENDER POSTS ============
 function renderPosts(data) {
     postContainer.innerHTML = "";
-    const posts = data.data;
+
+    const posts = data?.data || [];
+    if (!Array.isArray(posts)) return;
 
     posts.forEach((post) => {
         const rawImageUrl =
@@ -81,8 +88,8 @@ function renderPosts(data) {
     });
 
     const start = (state.page - 1) * state.size + 1;
-    const end = Math.min(state.page * state.size, data.meta.total);
-    showingText.textContent = `Showing ${start} - ${end} of ${data.meta.total}`;
+    const end = Math.min(state.page * state.size, data.meta.total || 0);
+    showingText.textContent = `Showing ${start} - ${end} of ${data.meta.total || 0}`;
 }
 
 // ============ RENDER PAGINATION ============
