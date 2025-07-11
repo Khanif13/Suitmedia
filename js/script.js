@@ -54,17 +54,21 @@ function renderPosts(data) {
         let imageUrl = "https://via.placeholder.com/400x300?text=No+Image";
 
         if (rawImageUrl) {
-            const fullImageUrl = rawImageUrl.startsWith("http")
+            imageUrl = rawImageUrl.startsWith("http")
                 ? rawImageUrl
                 : `https://suitmedia-backend.suitdev.com${rawImageUrl}`;
-
-            imageUrl = `/api/image?url=${encodeURIComponent(fullImageUrl)}`;
         }
 
         postContainer.innerHTML += `
             <div class="col-md-4 mb-4">
                 <div class="card h-100 shadow-sm">
-                    <img src="${imageUrl}" class="card-img-top" loading="lazy" alt="${post.title}" style="aspect-ratio: 4/3; object-fit: cover;">
+                    <img 
+                        src="${imageUrl}" 
+                        class="card-img-top" 
+                        loading="lazy" 
+                        alt="${post.title}" 
+                        onerror="this.onerror=null;this.src='https://via.placeholder.com/400x300?text=No+Image'" 
+                        style="aspect-ratio: 4/3; object-fit: cover;">
                     <div class="card-body">
                         <small class="text-muted">${new Date(post.published_at).toLocaleDateString("id-ID", {
             day: 'numeric', month: 'long', year: 'numeric'
@@ -80,7 +84,6 @@ function renderPosts(data) {
     const end = Math.min(state.page * state.size, data.meta.total);
     showingText.textContent = `Showing ${start} - ${end} of ${data.meta.total}`;
 }
-
 
 // ============ RENDER PAGINATION ============
 function renderPagination(data) {
