@@ -41,49 +41,50 @@ async function fetchPosts() {
 
 // ============ RENDER POSTS ============
 function renderPosts(data) {
-
     postContainer.innerHTML = "";
     const posts = data.data;
 
-    posts.forEach(post => {
+    posts.forEach(async (post) => {
         const rawImageUrl =
             post.medium_image?.[0]?.url_full ||
             post.medium_image?.[0]?.url ||
             post.small_image?.[0]?.url_full ||
             post.small_image?.[0]?.url;
 
-        // Cek apakah URL sudah absolute atau relative
-        const imageUrl = rawImageUrl?.startsWith("http")
-            ? rawImageUrl
-            : rawImageUrl
-                ? `https://suitmedia-backend.suitdev.com${rawImageUrl}`
-                : "https://via.placeholder.com/400x300?text=No+Image";
+        let imageUrl = "https://via.placeholder.com/400x300?text=No+Image";
 
-        console.log("Gambar path:", rawImageUrl);
-        console.log("Full URL:", imageUrl);
+        if (rawImageUrl) {
+            const fullImageUrl = rawImageUrl.startsWith("http")
+                ? rawImageUrl
+                : `https://suitmedia-backend.suitdev.com${rawImageUrl}`;
+            try {
+                const response = await fetch(fullImageUrl);
+                const blob = await response.blob();
+                imageUrl = URL.createObjectURL(blob);
+            } catch (err) {
+                console.error("Gagal load gambar", err);
+            }
+        }
 
         postContainer.innerHTML += `
-    <div class="col-md-4 mb-4">
-        <div class="card h-100 shadow-sm">
-            <img src="${imageUrl}" class="card-img-top" loading="lazy" alt="${post.title}" style="aspect-ratio: 4/3; object-fit: cover;">
-            <div class="card-body">
-                <small class="text-muted">${new Date(post.published_at).toLocaleDateString("id-ID", {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <img src="${imageUrl}" class="card-img-top" loading="lazy" alt="${post.title}" style="aspect-ratio: 4/3; object-fit: cover;">
+                    <div class="card-body">
+                        <small class="text-muted">${new Date(post.published_at).toLocaleDateString("id-ID", {
             day: 'numeric', month: 'long', year: 'numeric'
         })}</small>
-                <h5 class="card-title post-title">${post.title}</h5>
+                        <h5 class="card-title post-title">${post.title}</h5>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-  `;
+        `;
     });
-
-
 
     const start = (state.page - 1) * state.size + 1;
     const end = Math.min(state.page * state.size, data.meta.total);
     showingText.textContent = `Showing ${start} - ${end} of ${data.meta.total}`;
 }
-
 
 // ============ RENDER PAGINATION ============
 function renderPagination(data) {
